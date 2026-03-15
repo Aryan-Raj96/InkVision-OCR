@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Text Extractor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #1d2671, #c33764);
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            background: #fff;
+            width: 420px;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .sub {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .file-box {
+            border: 2px dashed #c33764;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .file-box span {
+            color: #c33764;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #c33764;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .loader {
+            margin: 20px auto 10px;
+            width: 60px;
+            height: 6px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .loader::after {
+            content: "";
+            width: 20px;
+            height: 100%;
+            background: #c33764;
+            display: block;
+            animation: run 1s linear infinite;
+        }
+
+        @keyframes run {
+            from { transform: translateX(-20px); }
+            to { transform: translateX(60px); }
+        }
+
+        .processing {
+            display: none;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .result-section {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .result-section img {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .text-box {
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .download-btn {
+            background: #1d2671;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Image Text Extractor</h2>
+    <div class="sub">Upload image & wait while we process</div>
+
+    <form action="/upload"
+          method="POST"
+          enctype="multipart/form-data"
+          onsubmit="showLoader()">
+
+        <label class="file-box">
+            <input type="file" name="image" accept="image/*" required>
+            <span>Click to select image</span>
+        </label>
+
+        <button type="submit">Start Processing</button>
+
+        <div class="loader" id="loader"></div>
+        <div class="processing" id="text">Processing image, please wait...</div>
+    </form>
+
+    {% if show_result %}
+    <div class="result-section">
+        <hr>
+
+        <h3>Processed Image</h3>
+        <img src="{{ url_for('static', filename=image_path) }}">
+
+        <h3>Extracted Text</h3>
+        <div class="text-box">
+            {{ words }}
+        </div>
+
+        <a href="/download_pdf">
+            <button class="download-btn">Download PDF</button>
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    function showLoader() {
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("text").style.display = "block";
+    }
+</script>
+
+</body>
+</html>
